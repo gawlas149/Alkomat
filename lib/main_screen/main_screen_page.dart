@@ -19,7 +19,7 @@ class MainScreenPage extends GetView<MainScreenController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Jakaś fajna treść',
+              'Jakaś fajna treść, logo czy coś \nchyba by tu było pytanie o wagę i próg kiedy za dużo promili',
             ),
           ],
         ),

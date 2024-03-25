@@ -153,7 +153,8 @@ class BreathalyserPage extends GetView<BreathalyserController> {
           borderRadius: BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Text('${controller.percentageInBlood}‰ we krwi'),
+        child:
+            Text('${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
       ),
     );
   }
@@ -198,7 +199,7 @@ class BreathalyserController extends GetxController {
     await prefs.setString('drunk_liquors', encodedData);
   }
 
-  //wartości z dupy
+  //wartości z dupy TO DO
   void calculatePercentageInBlood() {
     double alcoholSum = 0;
     for (Liquor liquor in drunkLiquors) {
