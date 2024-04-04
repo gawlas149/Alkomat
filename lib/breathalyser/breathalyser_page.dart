@@ -115,7 +115,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       onPressed: () async {
         final TimeOfDay? timeOfDay = await showTimePicker(
           context: Get.context!,
-          initialTime: TimeOfDay.now(),
+          initialTime: controller.startTime.value!,
         );
         if (timeOfDay == null) {
           return;
@@ -150,10 +150,11 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _buttonClearBreathalyser() {
     return ElevatedButton(
-        child: const Text('Koniec imprezy'),
-        onPressed: () => {
-              controller.clearBreathalyser(),
-            });
+      child: const Text('Koniec imprezy'),
+      onPressed: () => {
+        showConfirmDialog(),
+      },
+    );
   }
 
   Widget _buttonAddLiquor() {
@@ -216,6 +217,58 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         child:
             Text('${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
       ),
+    );
+  }
+
+  void showConfirmDialog() {
+    final BuildContext context = Get.context!;
+    final Widget cancelButton = TextButton(
+      child: Text(
+        'Nie :D',
+        style: TextStyle(fontSize: 18),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+    final Widget continueButton = TextButton(
+      child: Text(
+        'Tak :c',
+        style: TextStyle(fontSize: 18),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+        controller.clearBreathalyser();
+      },
+    );
+
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'Koniec imprezy',
+        textAlign: TextAlign.center,
+      ),
+      titlePadding: const EdgeInsets.only(top: 18),
+      content: Text(
+        '\nCzy impreza na pewno się zakończyła?',
+        style: TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
+      contentPadding:
+          const EdgeInsets.only(top: 6, bottom: 18, left: 6, right: 6),
+      actions: <Widget>[
+        cancelButton,
+        continueButton,
+      ],
+      actionsAlignment: MainAxisAlignment.spaceAround,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
@@ -286,9 +339,23 @@ class BreathalyserController extends GetxController {
       startTimeDate = DateTime.parse(dateString);
     }
 
+    DateTime? before = startTimeDate;
+    if (before != null) {
+      before = DateTime(before.year, before.month, before.day,
+          int.parse(startTimeHours!), int.parse(startTimeMinutes!));
+    }
+
     if (startTimeMinutes != null &&
         startTimeHours != null &&
         startTimeDate != null) {
+      startTime.value = TimeOfDay(
+        hour: int.parse(
+          startTimeHours.toString(),
+        ),
+        minute: int.parse(
+          startTimeMinutes.toString(),
+        ),
+      );
       startTimeChosen.value = true;
     }
   }
