@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:ios_project_multi/add_liquor/add_liquor_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,67 +27,32 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _body() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Stack(
-        children: <Widget>[
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: Column(
+        children: [
+          _timePicker(),
           Expanded(
-            child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(top: 12, bottom: 30),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) => InkWell(
-                    onTap: () => {
-                          Get.toNamed(EditLiquorPage.path, arguments: {
-                            'name': controller.drunkLiquors[index].name,
-                            'percentage': controller
-                                .drunkLiquors[index].percentage
-                                .toString(),
-                            'volume':
-                                controller.drunkLiquors[index].volume.toString()
-                          })!
-                              .then(
-                            (result) => {
-                              if (result != null)
-                                {
-                                  if (result == -1)
-                                    {controller.drunkLiquors.removeAt(index)}
-                                  else
-                                    {
-                                      controller.drunkLiquors[index] = Liquor(
-                                        result[0],
-                                        double.parse(result[1]),
-                                        int.parse(result[2]),
-                                      )
-                                    },
-                                  controller.calculatePercentageInBlood(),
-                                  controller.updateSharedPreferences(),
-                                }
-                            },
+            child: Stack(
+              children: <Widget>[
+                Expanded(child: _liquorsList()),
+                Positioned(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: controller.drunkLiquors.isEmpty
+                        ? _buttonAddLiquor()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _percentageInBloodText(),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              _buttonAddLiquor(),
+                            ],
                           ),
-                        },
-                    child: _liquerRow(controller.drunkLiquors[index])),
-                separatorBuilder: (BuildContext context, int index) =>
-                    Container(
-                      height: 1,
-                      color: Colors.black,
-                    ),
-                itemCount: controller.drunkLiquors.length),
-          ),
-          Positioned(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: controller.drunkLiquors.isEmpty
-                  ? _button()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _percentageInBloodText(),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        _button(),
-                      ],
-                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -92,14 +60,89 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
   }
 
-  Widget _button() {
+  Widget _liquorsList() {
+    return ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 12, bottom: 30),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) => InkWell(
+            onTap: () => {
+                  Get.toNamed(EditLiquorPage.path, arguments: {
+                    'name': controller.drunkLiquors[index].name,
+                    'percentage':
+                        controller.drunkLiquors[index].percentage.toString(),
+                    'volume': controller.drunkLiquors[index].volume.toString()
+                  })!
+                      .then(
+                    (result) => {
+                      if (result != null)
+                        {
+                          if (result == -1)
+                            {controller.drunkLiquors.removeAt(index)}
+                          else
+                            {
+                              controller.drunkLiquors[index] = Liquor(
+                                result[0],
+                                double.parse(result[1]),
+                                int.parse(result[2]),
+                              )
+                            },
+                          controller.calculatePercentageInBlood(),
+                          controller.updateSharedPreferencesLiquors(),
+                        }
+                    },
+                  ),
+                },
+            child: _liquerRow(controller.drunkLiquors[index])),
+        separatorBuilder: (BuildContext context, int index) => Container(
+              height: 1,
+              color: Colors.black,
+            ),
+        itemCount: controller.drunkLiquors.length);
+  }
+
+  Widget _timePicker() {
+    return ElevatedButton(
+      onPressed: () async {
+        final TimeOfDay? timeOfDay = await showTimePicker(
+          context: Get.context!,
+          initialTime: TimeOfDay.now(),
+        );
+        if (timeOfDay == null) {
+          return;
+        }
+        controller.startTime.value = timeOfDay;
+
+        controller.startTimeChosen.value = false; //XD
+        controller.startTimeChosen.value = true;
+
+        controller.startTimeHours =
+            controller.startTime.value?.hour.toString().padLeft(2, '0');
+        controller.startTimeMinutes =
+            controller.startTime.value?.minute.toString().padLeft(2, '0');
+
+        //to do jeśli jest 1 a wybierzesz 23 to znaczy że wczoraj zacząłeś pić a nie dziś
+        controller.startTimeDate = DateTime.now();
+        controller.updateSharedPreferencesStartTime();
+        controller.calculatePercentageInBlood();
+      },
+      child: Obx(
+        () {
+          if (controller.startTimeChosen.value == true) {
+            return Text(
+                '${controller.startTimeHours}:${controller.startTimeMinutes}');
+          } else {
+            return Text('Wybierz czas rozpoczęcia libacji');
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buttonAddLiquor() {
     return ElevatedButton(
       child: const Text('Dodaj trunek'),
       onPressed: () => {
-        // controller.drunkLiquors.add(
-        //   Liquor('Wódeczka', 40.0, 300),
-        // ),
-
         Get.toNamed(AddLiquorPage.path)!.then(
           (result) => {
             if (result != null)
@@ -147,10 +190,10 @@ class BreathalyserPage extends GetView<BreathalyserController> {
   Widget _percentageInBloodText() {
     return DecoratedBox(
       decoration: BoxDecoration(
-          color: controller.percentageInBlood.value < 0.5
+          color: controller.percentageInBlood.value < 0.2
               ? Colors.lightGreen
               : Colors.red,
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child:
@@ -165,10 +208,20 @@ class BreathalyserController extends GetxController {
 
   RxList<Liquor> drunkLiquors = <Liquor>[].obs;
   RxDouble percentageInBlood = 0.0.obs;
+  Rx<TimeOfDay?> startTime = TimeOfDay.now().obs;
+  String? startTimeHours;
+  String? startTimeMinutes;
+  DateTime? startTimeDate;
+
+  // DateTime now = new DateTime.now();
+  // DateTime date = new DateTime(now.year, now.month, now.day);
+
+  RxBool startTimeChosen = false.obs;
 
   @override
   void onInit() {
     super.onInit();
+    loadTime();
     loadLiquors();
   }
 
@@ -178,13 +231,13 @@ class BreathalyserController extends GetxController {
     );
 
     calculatePercentageInBlood();
-    updateSharedPreferences();
+    updateSharedPreferencesLiquors();
   }
 
   Future<void> loadLiquors() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final String? liquorsString = await prefs.getString('drunk_liquors');
+    final String? liquorsString = prefs.getString('drunk_liquors');
 
     if (liquorsString != null) {
       drunkLiquors.value = Liquor.decode(liquorsString);
@@ -192,21 +245,85 @@ class BreathalyserController extends GetxController {
     }
   }
 
-  Future<void> updateSharedPreferences() async {
+  Future<void> updateSharedPreferencesLiquors() async {
     final prefs = await SharedPreferences.getInstance();
     final String encodedData = Liquor.encode(drunkLiquors);
 
     await prefs.setString('drunk_liquors', encodedData);
   }
 
-  //wartości z dupy TO DO
-  void calculatePercentageInBlood() {
-    double alcoholSum = 0;
-    for (Liquor liquor in drunkLiquors) {
-      alcoholSum += liquor.percentage * liquor.volume / 1000;
+  Future<void> loadTime() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final String? minutesString = prefs.getString('start_time_minutes');
+    final String? hoursString = prefs.getString('start_time_hours');
+    final String? dateString = prefs.getString('start_time_date');
+
+    if (minutesString != null) {
+      startTimeMinutes = minutesString;
+    }
+    if (hoursString != null) {
+      startTimeHours = hoursString;
+    }
+    if (dateString != null) {
+      startTimeDate = DateTime.parse(dateString);
     }
 
-    //brać pod uwagę wagę
-    percentageInBlood.value = alcoholSum / 50;
+    if (startTimeMinutes != null &&
+        startTimeHours != null &&
+        startTimeDate != null) {
+      startTimeChosen.value = true;
+    }
+  }
+
+  Future<void> updateSharedPreferencesStartTime() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('start_time_minutes', startTimeMinutes!);
+    await prefs.setString('start_time_hours', startTimeHours!);
+    await prefs.setString('start_time_date', startTimeDate!.toString());
+  }
+
+  void calculatePercentageInBlood() {
+    //suma alkoholu [g]
+    double alcoholSum = 0;
+    for (Liquor liquor in drunkLiquors) {
+      alcoholSum += liquor.volume * liquor.percentage / 100;
+    }
+    alcoholSum = alcoholSum * 0.8; //bo woltaż to procenty objętościowe
+
+    //czas który upłynął
+    int minutesPassed = 0;
+
+    DateTime? before = startTimeDate;
+    DateTime now = DateTime.now();
+    if (before != null) {
+      before = DateTime(before.year, before.month, before.day,
+          int.parse(startTimeHours!), int.parse(startTimeMinutes!));
+
+      Duration? timeDifference = now.difference(before);
+      minutesPassed = timeDifference.inMinutes;
+    }
+
+    //wspołczynnik rozkładu alkoholu 0.68 dla mężczyzn i 0.55 dla kobiet
+    //to do pytać o płeć
+    double r = 0.68;
+
+    //waga [kg]
+    //to do pytanie o wagę
+    double weight = 90;
+
+    // BAC by Widmark equation
+    double bloodAlcoholConcentration = alcoholSum / (weight * r);
+
+    percentageInBlood.value =
+        bloodAlcoholConcentration - 0.015 * minutesPassed / 6;
+
+    // percentageInBlood.value = (500 * 40 / 100) / (0.68 * 90);
+
+    if (percentageInBlood.value < 0) {
+      percentageInBlood.value = 0;
+    }
+    // percentageInBlood.value = double.parse(minutesPassed.toString());
   }
 }
