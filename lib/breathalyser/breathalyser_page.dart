@@ -30,7 +30,16 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: Column(
         children: [
-          _timePicker(),
+          controller.startTimeChosen.value
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _timePicker(),
+                    const SizedBox(width: 20),
+                    _buttonClearBreathalyser(),
+                  ],
+                )
+              : _timePicker(),
           Expanded(
             child: Stack(
               children: <Widget>[
@@ -137,6 +146,14 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         },
       ),
     );
+  }
+
+  Widget _buttonClearBreathalyser() {
+    return ElevatedButton(
+        child: const Text('Koniec imprezy'),
+        onPressed: () => {
+              controller.clearBreathalyser(),
+            });
   }
 
   Widget _buttonAddLiquor() {
@@ -284,6 +301,16 @@ class BreathalyserController extends GetxController {
     await prefs.setString('start_time_date', startTimeDate!.toString());
   }
 
+  Future<void> clearBreathalyser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('drunk_liquors');
+    prefs.remove('start_time_minutes');
+    prefs.remove('start_time_hours');
+    prefs.remove('start_time_date');
+
+    Get.back();
+  }
+
   void calculatePercentageInBlood() {
     //suma alkoholu [g]
     double alcoholSum = 0;
@@ -316,14 +343,12 @@ class BreathalyserController extends GetxController {
     // BAC by Widmark equation
     double bloodAlcoholConcentration = alcoholSum / (weight * r);
 
+    // BAC after time by chatGPT
     percentageInBlood.value =
-        bloodAlcoholConcentration - 0.015 * minutesPassed / 6;
-
-    // percentageInBlood.value = (500 * 40 / 100) / (0.68 * 90);
+        bloodAlcoholConcentration - 0.02 * minutesPassed / 6;
 
     if (percentageInBlood.value < 0) {
       percentageInBlood.value = 0;
     }
-    // percentageInBlood.value = double.parse(minutesPassed.toString());
   }
 }
