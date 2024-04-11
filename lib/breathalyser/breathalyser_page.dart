@@ -122,13 +122,18 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         controller.startTimeChosen.value = false; //XD
         controller.startTimeChosen.value = true;
 
-        controller.startTimeHours =
-            controller.startTime.value?.hour.toString().padLeft(2, '0');
+        controller.startTimeHours = timeOfDay.hour.toString().padLeft(2, '0');
         controller.startTimeMinutes =
-            controller.startTime.value?.minute.toString().padLeft(2, '0');
+            timeOfDay.minute.toString().padLeft(2, '0');
 
-        //to do jeśli jest 1 a wybierzesz 23 to znaczy że wczoraj zacząłeś pić a nie dziś
-        controller.startTimeDate = DateTime.now();
+        //jeśli jest 1 a wybierzesz 23 to znaczy że wczoraj zacząłeś pić a za 22h
+        if (timeOfDay.hour > TimeOfDay.now().hour) {
+          controller.startTimeDate =
+              DateTime.now().subtract(const Duration(days: 1));
+        } else {
+          controller.startTimeDate = DateTime.now();
+        }
+
         controller.updateSharedPreferencesStartTime();
         controller.calculatePercentageInBlood();
       },
@@ -195,18 +200,21 @@ class BreathalyserPage extends GetView<BreathalyserController> {
             child: Text(
               liquor.name,
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
             ),
           ),
           Expanded(
             child: Text(
               '${liquor.volume}ml',
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
             ),
           ),
           Expanded(
             child: Text(
               '${liquor.percentage}%',
               textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -249,7 +257,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     final Widget cancelButton = TextButton(
       child: Text(
         'Nie :D',
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
         Navigator.of(context).pop();
@@ -258,7 +266,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     final Widget continueButton = TextButton(
       child: Text(
         'Tak :c',
-        style: TextStyle(fontSize: 18),
+        style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
         Navigator.of(context).pop();
@@ -273,7 +281,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       ),
       titlePadding: const EdgeInsets.only(top: 18),
       content: Text(
-        '\nCzy impreza na pewno się zakończyła?',
+        '\nCzy impreza na pewno się zakończyła?\nPotwierdzenie spowoduje wyczyszczenie listsy alkoholi',
         style: TextStyle(fontSize: 16),
         textAlign: TextAlign.center,
       ),
@@ -426,7 +434,6 @@ class BreathalyserController extends GetxController {
     }
 
     //wspołczynnik rozkładu alkoholu 0.68 dla mężczyzn i 0.55 dla kobiet
-    //to do pytać o płeć
     double r = 0.68;
     if (userGender == 'female') {
       r = 0.55;
