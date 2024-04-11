@@ -32,7 +32,7 @@ class MainScreenPage extends GetView<MainScreenController> {
           children: [
             const SizedBox(height: 15),
             Text(
-              'Celem aplikacji jest mierzenie stężenia alkoholu we krwi w trakcie imprezy.\n\nKontroluj jak bardzo jesteś pijany poprzez systematyczne aktualizowanie wypitych trunków\n\n',
+              'Celem aplikacji jest mierzenie stężenia alkoholu we krwi w trakcie imprezy\n\nKontroluj jak bardzo jesteś pijany poprzez systematyczne aktualizowanie wypitych trunków\n\n',
               style: TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
@@ -105,6 +105,7 @@ class MainScreenPage extends GetView<MainScreenController> {
             child: Row(
               children: [
                 Radio(
+                  activeColor: Colors.lightGreen,
                   value: 'male',
                   groupValue: controller.selectedGender!.value,
                   onChanged: (_) {
@@ -120,6 +121,7 @@ class MainScreenPage extends GetView<MainScreenController> {
             child: Row(
               children: [
                 Radio(
+                  activeColor: Colors.lightGreen,
                   value: 'female',
                   groupValue: controller.selectedGender!.value,
                   onChanged: (_) {
