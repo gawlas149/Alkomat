@@ -132,6 +132,10 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         controller.updateSharedPreferencesStartTime();
         controller.calculatePercentageInBlood();
       },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
       child: Obx(
         () {
           if (controller.startTimeChosen.value == true) {
@@ -151,6 +155,10 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       onPressed: () => {
         showConfirmDialog(),
       },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
     );
   }
 
@@ -171,6 +179,10 @@ class BreathalyserPage extends GetView<BreathalyserController> {
           },
         )
       },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
     );
   }
 
@@ -434,6 +446,8 @@ class BreathalyserController extends GetxController {
 
     if (percentageInBlood.value < 0) {
       percentageInBlood.value = 0;
+    } else if (percentageInBlood.value > 1000) {
+      percentageInBlood.value = 1000;
     }
   }
 
