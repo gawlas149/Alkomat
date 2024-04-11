@@ -1,7 +1,4 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:ios_project_multi/add_liquor/add_liquor_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -206,18 +203,33 @@ class BreathalyserPage extends GetView<BreathalyserController> {
   }
 
   Widget _percentageInBloodText() {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-          color: controller.percentageInBlood.value < 0.2
-              ? Colors.lightGreen
-              : Colors.red,
-          borderRadius: const BorderRadius.all(Radius.circular(10))),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child:
-            Text('${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
-      ),
-    );
+    if (controller.userLimit != null) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+            color: controller.percentageInBlood.value < controller.userLimit!
+                ? Colors.lightGreen
+                : Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(10))),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
+        ),
+      );
+    } else {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+            color: controller.percentageInBlood.value < 0.2
+                ? Colors.lightGreen
+                : Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(10))),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
+        ),
+      );
+    }
   }
 
   void showConfirmDialog() {
@@ -278,19 +290,21 @@ class BreathalyserController extends GetxController {
 
   RxList<Liquor> drunkLiquors = <Liquor>[].obs;
   RxDouble percentageInBlood = 0.0.obs;
+
   Rx<TimeOfDay?> startTime = TimeOfDay.now().obs;
   String? startTimeHours;
   String? startTimeMinutes;
   DateTime? startTimeDate;
-
-  // DateTime now = new DateTime.now();
-  // DateTime date = new DateTime(now.year, now.month, now.day);
-
   RxBool startTimeChosen = false.obs;
+
+  double? userWeight;
+  double? userLimit;
+  String? userGender;
 
   @override
   void onInit() {
     super.onInit();
+    loadUserData();
     loadTime();
     loadLiquors();
   }
@@ -402,13 +416,17 @@ class BreathalyserController extends GetxController {
     //wspołczynnik rozkładu alkoholu 0.68 dla mężczyzn i 0.55 dla kobiet
     //to do pytać o płeć
     double r = 0.68;
+    if (userGender == 'female') {
+      r = 0.55;
+    }
 
-    //waga [kg]
-    //to do pytanie o wagę
-    double weight = 90;
-
+    double bloodAlcoholConcentration = 0;
     // BAC by Widmark equation
-    double bloodAlcoholConcentration = alcoholSum / (weight * r);
+    if (userWeight != null) {
+      bloodAlcoholConcentration = alcoholSum / (userWeight! * r);
+    } else {
+      bloodAlcoholConcentration = alcoholSum / (90 * r);
+    }
 
     // BAC after time by chatGPT
     percentageInBlood.value =
@@ -417,5 +435,13 @@ class BreathalyserController extends GetxController {
     if (percentageInBlood.value < 0) {
       percentageInBlood.value = 0;
     }
+  }
+
+  void loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    userWeight = double.parse(prefs.getString('user_weight').toString());
+    userLimit = double.parse(prefs.getString('user_limit').toString());
+    userGender = prefs.getString('user_gender');
   }
 }
