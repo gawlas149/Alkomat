@@ -30,11 +30,16 @@ class MainScreenPage extends GetView<MainScreenController> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(height: 15),
             Text(
-              'Jakaś fajna treść, logo czy coś \n\n',
+              'Celem aplikacji jest mierzenie stężenia alkoholu we krwi w trakcie imprezy.\n\nKontroluj jak bardzo jesteś pijany poprzez systematyczne aktualizowanie wypitych trunków\n\n',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
             ),
             Text(
-                'Aby aplikacja działała skuteczniej potrzebujemy paru informacji o Tobie:'),
+              'Aby aplikacja działała skuteczniej potrzebujemy paru informacji o Tobie:',
+              style: TextStyle(fontSize: 16),
+            ),
             TextFormField(
               maxLength: 4,
               keyboardType: TextInputType.number,
