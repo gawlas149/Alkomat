@@ -13,12 +13,19 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.lightGreen,
-        title: const Text('Alkomat'),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.lightGreen,
+          title: const Text('Alkomat'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: Obx(() => _body()),
       ),
-      body: Obx(() => _body()),
     );
   }
 
@@ -37,30 +44,19 @@ class BreathalyserPage extends GetView<BreathalyserController> {
                   ],
                 )
               : _timePicker(),
-          Expanded(
-            child: Stack(
-              children: <Widget>[
-                Expanded(child: _liquorsList()),
-                Positioned(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: controller.drunkLiquors.isEmpty
-                        ? _buttonAddLiquor()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _percentageInBloodText(),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              _buttonAddLiquor(),
-                            ],
-                          ),
-                  ),
+          Expanded(child: _liquorsList()),
+          controller.drunkLiquors.isEmpty
+              ? _buttonAddLiquor()
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _percentageInBloodText(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    _buttonAddLiquor(),
+                  ],
                 ),
-              ],
-            ),
-          ),
         ],
       ),
     );
