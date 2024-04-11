@@ -47,6 +47,9 @@ class EditLiquorPage extends GetView<EditLiquorController> {
                 ),
                 label: Text('Woltaż trunku [%]'),
               ),
+              onChanged: (String text) {
+                controller.checkVoltage(text);
+              },
             ),
             TextFormField(
               maxLength: 5,
@@ -60,6 +63,9 @@ class EditLiquorPage extends GetView<EditLiquorController> {
                 ),
                 label: Text('Objętość trunku [ml]'),
               ),
+              onChanged: (String text) {
+                controller.checkVolume(text);
+              },
             ),
             const SizedBox(
               height: 15,
@@ -72,7 +78,12 @@ class EditLiquorPage extends GetView<EditLiquorController> {
               children: [
                 _buttonDelete(),
                 const Spacer(),
-                _buttonSave(),
+                Obx(
+                  () => (controller.voltageCorrect.value &&
+                          controller.volumeCorrect.value)
+                      ? _buttonSaveEnabled()
+                      : _buttonSaveDisabled(),
+                ),
               ],
             )
           ],
@@ -105,13 +116,16 @@ class EditLiquorPage extends GetView<EditLiquorController> {
           controller.volumeController.text =
               (int.parse(controller.volumeController.text) + volume).toString()
         },
+        style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.lightGreen,
+            foregroundColor: Colors.black,
+            elevation: 3),
       ),
     );
   }
 
-  Widget _buttonSave() {
+  Widget _buttonSaveEnabled() {
     return ElevatedButton(
-      child: const Text('Zapisz trunek'),
       onPressed: () => {
         Get.back(result: [
           controller.nameController.text,
@@ -119,6 +133,18 @@ class EditLiquorPage extends GetView<EditLiquorController> {
           controller.volumeController.text
         ])
       },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
+      child: Text('Zapisz trunek'),
+    );
+  }
+
+  Widget _buttonSaveDisabled() {
+    return const ElevatedButton(
+      onPressed: null,
+      child: Text('Zapisz trunek'),
     );
   }
 
@@ -126,6 +152,10 @@ class EditLiquorPage extends GetView<EditLiquorController> {
     return ElevatedButton(
       child: const Text('Usuń trunek'),
       onPressed: () => {Get.back(result: -1)},
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
     );
   }
 }
@@ -137,6 +167,9 @@ class EditLiquorController extends GetxController {
   final TextEditingController percentageController = TextEditingController();
   final TextEditingController volumeController = TextEditingController();
 
+  RxBool voltageCorrect = true.obs;
+  RxBool volumeCorrect = true.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -147,5 +180,30 @@ class EditLiquorController extends GetxController {
     nameController.text = Get.arguments['name'];
     percentageController.text = Get.arguments['percentage'];
     volumeController.text = Get.arguments['volume'];
+  }
+
+  void checkVoltage(String newString) {
+    num? newNumber = num.tryParse(newString);
+    if (newNumber == null) {
+      voltageCorrect.value = false;
+    } else {
+      voltageCorrect.value = isNumeric(newString) &&
+          num.tryParse(newString)! > 0 &&
+          num.tryParse(newString)! <= 100;
+    }
+  }
+
+  void checkVolume(String newString) {
+    num? newNumber = num.tryParse(newString);
+    if (newNumber == null) {
+      volumeCorrect.value = false;
+    } else {
+      volumeCorrect.value =
+          isNumeric(newString) && num.tryParse(newString)! > 0;
+    }
+  }
+
+  bool isNumeric(String s) {
+    return double.tryParse(s) != null;
   }
 }
