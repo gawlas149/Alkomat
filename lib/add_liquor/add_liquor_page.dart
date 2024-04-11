@@ -21,7 +21,8 @@ class AddLiquorPage extends GetView<AddLiquorController> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: SingleChildScrollView(
-        child: Column(
+          child: Obx(
+        () => Column(
           children: [
             TextFormField(
               maxLength: 15,
@@ -47,6 +48,9 @@ class AddLiquorPage extends GetView<AddLiquorController> {
                 ),
                 label: Text('Woltaż trunku [%]'),
               ),
+              onChanged: (String text) {
+                controller.checkVoltage(text);
+              },
             ),
             TextFormField(
               maxLength: 5,
@@ -60,20 +64,24 @@ class AddLiquorPage extends GetView<AddLiquorController> {
                 ),
                 label: Text('Objętość trunku [ml]'),
               ),
+              onChanged: (String text) {
+                controller.checkVolume(text);
+              },
             ),
             const SizedBox(
               height: 25,
             ),
-            _buttonSave(),
+            (controller.voltageCorrect.value && controller.volumeCorrect.value)
+                ? _buttonSaveEnabled()
+                : _buttonSaveDisabled(),
           ],
         ),
-      ),
+      )),
     );
   }
 
-  Widget _buttonSave() {
+  Widget _buttonSaveEnabled() {
     return ElevatedButton(
-      child: const Text('Zapisz trunek'),
       onPressed: () => {
         Get.back(result: [
           controller.nameController.text,
@@ -81,6 +89,18 @@ class AddLiquorPage extends GetView<AddLiquorController> {
           controller.volumeController.text
         ])
       },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
+      child: Text('Zapisz trunek'),
+    );
+  }
+
+  Widget _buttonSaveDisabled() {
+    return const ElevatedButton(
+      onPressed: null,
+      child: Text('Zapisz trunek'),
     );
   }
 }
@@ -92,8 +112,36 @@ class AddLiquorController extends GetxController {
   final TextEditingController percentageController = TextEditingController();
   final TextEditingController volumeController = TextEditingController();
 
+  RxBool voltageCorrect = false.obs;
+  RxBool volumeCorrect = false.obs;
+
   @override
   void onInit() {
     super.onInit();
+  }
+
+  void checkVoltage(String newString) {
+    num? newNumber = num.tryParse(newString);
+    if (newNumber == null) {
+      voltageCorrect.value = false;
+    } else {
+      voltageCorrect.value = isNumeric(newString) &&
+          num.tryParse(newString)! > 0 &&
+          num.tryParse(newString)! <= 100;
+    }
+  }
+
+  void checkVolume(String newString) {
+    num? newNumber = num.tryParse(newString);
+    if (newNumber == null) {
+      volumeCorrect.value = false;
+    } else {
+      volumeCorrect.value =
+          isNumeric(newString) && num.tryParse(newString)! > 0;
+    }
+  }
+
+  bool isNumeric(String s) {
+    return double.tryParse(s) != null;
   }
 }
