@@ -226,27 +226,49 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     if (controller.userLimit != null) {
       return DecoratedBox(
         decoration: BoxDecoration(
-            color: controller.percentageInBlood.value < controller.userLimit!
-                ? Colors.lightGreen
-                : Colors.red,
-            borderRadius: const BorderRadius.all(Radius.circular(10))),
+          color: controller.percentageInBlood.value < controller.userLimit!
+              ? Colors.lightGreen
+              : Colors.red,
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
+            '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
+            style: TextStyle(fontSize: 15),
+          ),
         ),
       );
     } else {
       return DecoratedBox(
         decoration: BoxDecoration(
-            color: controller.percentageInBlood.value < 0.2
-                ? Colors.lightGreen
-                : Colors.red,
-            borderRadius: const BorderRadius.all(Radius.circular(10))),
+          color: controller.percentageInBlood.value < 0.2
+              ? Colors.lightGreen
+              : Colors.red,
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 7,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi'),
+            '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
+            style: TextStyle(fontSize: 15),
+          ),
         ),
       );
     }
