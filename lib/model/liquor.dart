@@ -18,9 +18,9 @@ class Liquor {
         'volume': liquor.volume,
       };
 
-  static String encode(List<Liquor> musics) => json.encode(
-        musics
-            .map<Map<String, dynamic>>((music) => Liquor.toMap(music))
+  static String encode(List<Liquor> liquors) => json.encode(
+        liquors
+            .map<Map<String, dynamic>>((liquor) => Liquor.toMap(liquor))
             .toList(),
       );
 
