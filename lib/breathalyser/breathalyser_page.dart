@@ -237,58 +237,134 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _percentageInBloodText() {
     if (controller.userLimit != null) {
-      return DecoratedBox(
-        decoration: BoxDecoration(
-          color: controller.percentageInBlood.value < controller.userLimit!
-              ? Colors.lightGreen
-              : Colors.red,
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 7,
-              offset: const Offset(0, 3),
+      return InkWell(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: controller.percentageInBlood.value < controller.userLimit!
+                ? Colors.lightGreen
+                : Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
+              style: TextStyle(fontSize: 15),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'percentage_in_blood'.trParams(<String, String>{
-              'percentage': controller.percentageInBlood.toStringAsFixed(3)
-            }),
-            style: const TextStyle(fontSize: 15),
           ),
         ),
+        onTap: () => {
+          showInfoDialog(),
+        },
       );
     } else {
-      return DecoratedBox(
-        decoration: BoxDecoration(
-          color: controller.percentageInBlood.value < 0.2
-              ? Colors.lightGreen
-              : Colors.red,
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 7,
-              offset: const Offset(0, 3), // changes position of shadow
+      return InkWell(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: controller.percentageInBlood.value < 0.2
+                ? Colors.lightGreen
+                : Colors.red,
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 7,
+                offset: Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
+              style: TextStyle(fontSize: 15),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'percentage_in_blood'.trParams(<String, String>{
-              'percentage': controller.percentageInBlood.toStringAsFixed(3)
-            }),
-            style: const TextStyle(fontSize: 15),
           ),
         ),
+        onTap: () => {
+          showInfoDialog(),
+        },
       );
     }
+  }
+
+  void showInfoDialog() {
+    final BuildContext context = Get.context!;
+    final Widget okeyButton = TextButton(
+      child: Text(
+        'Okej',
+        style: TextStyle(fontSize: 18, color: Colors.green),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'Reakcja na promile',
+        textAlign: TextAlign.center,
+      ),
+      titlePadding: const EdgeInsets.only(top: 18),
+      content: Text(
+        _infoText(),
+        style: TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
+      contentPadding:
+          const EdgeInsets.only(top: 20, bottom: 18, left: 10, right: 10),
+      actions: <Widget>[
+        okeyButton,
+      ],
+      actionsAlignment: MainAxisAlignment.spaceAround,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  String _infoText() {
+    double percentageInBlood = controller.percentageInBlood.value;
+    if (percentageInBlood == 0) {
+      return 'Jesteś kompletnie trzeźwy';
+    }
+    if (percentageInBlood < 0.2) {
+      return 'Jesteś na tyle trzeźwy by móc w Polsce prowadzić samochód\nMożesz czuć niewielką zmianę nastroju';
+    }
+    if (percentageInBlood < 0.5) {
+      return 'Twoja koordynacja wzrokowo-ruchowa jest zaburzona\nRozpoczyna się tracenie równowagi\nMożesz przeżywać euforię\nNie prowadź żadnego pojazdu!';
+    }
+    if (percentageInBlood < 0.7) {
+      return 'Twoja sprawność ruchowa jest zaburzona\nJesteś nadpobudliwy i gadatliwy\nTwoja samokontrola jest obniżona\nBłędnie oceniasz swoje możliwości';
+    }
+    if (percentageInBlood < 2) {
+      return 'Przeżywasz zaburzenia równowagi\nSpada Twoja sprawność intelektualna\nTwój czas reakcji jest opóźniony\nJesteś drażliwy\nMasz wysokie ciśnienie krwi';
+    }
+    if (percentageInBlood < 3) {
+      return 'Twoja mowa przypomina bełkot\nPrzerwacasz się\nCzujesz wzmożoną senność\nNie kontrolujesz własnych zachowań';
+    }
+    if (percentageInBlood < 4) {
+      return 'Spada Twoje ciśnienie krwi\nSpada Twoja temperatura ciała\nTracisz odruchy fizjologiczne';
+    }
+    if (percentageInBlood < 5) {
+      return 'Jesteś w śpiączce lub już nie żyjesz';
+    }
+    return 'Nie żyjesz\nImpreza na pewno była tego warta';
   }
 
   void showConfirmDialog() {
