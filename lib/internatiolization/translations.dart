@@ -31,6 +31,36 @@ class ApplicationTranslations extends Translations {
     'liquor_save': 'Save liquor',
     'edit_liquor': 'Edit liquor',
     'liquor_delete': 'Delete liquor',
+    'sort': 'Sort',
+    'sort_az': 'From A to Z',
+    'sort_za': 'From Z to A',
+    'sort_ml+': 'Increasing ml',
+    'sort_ml-': 'Decreasing ml',
+    'sort_perc+': 'Increasing %',
+    'sort_perc-': 'Decreasing %',
+    'okey': 'Okey',
+    'reaction': 'Reaction to per mille',
+    'drunk1': 'You are completely sober',
+    'drunk2':
+        'You are sober enough to drive a car in Poland\nYou may feel a slight change in mood',
+    'drunk3':
+        'Your eye-hand coordination is impaired\nYou start to lose your balance\nYou may experience euphoria\nDo not drive any vehicle!',
+    'drunk4':
+        'Your motor skills are impaired\You are hyperactive and talkative\Your self-control is reduced\nYou incorrectly assess your capabilities',
+    'drunk5':
+        'You are experiencing balance problems\nYour intellectual performance is declining\nYour reaction time is delayed\nYou are irritable\nYou have high blood pressure',
+    'drunk6':
+        'Your speech sounds like gibberish\You fall over\You feel increased drowsiness\You cannot control your own behavior',
+    'drunk7':
+        'Your blood pressure drops\Your body temperature drops\You lose your physiological reflexes',
+    'drunk8': 'You are in a coma or already dead',
+    'drunk9': "You're dead\nThe party was definitely worth it",
+    'cancel': 'Cancel',
+    'beer': 'Beer',
+    'vodka': 'Vodka',
+    'wine': 'Vine',
+    'champagne': 'Champagne',
+    'moonshine': 'Moonshine',
   };
 
   final Map<String, String> _plPL = <String, String>{
@@ -59,5 +89,35 @@ class ApplicationTranslations extends Translations {
     'liquor_save': 'Zapisz trunek',
     'edit_liquor': 'Edytuj trunek',
     'liquor_delete': 'Usuń trunek',
+    'sort': 'Sortuj',
+    'sort_az': 'Od A do Z',
+    'sort_za': 'Od Z do A',
+    'sort_ml+': 'Rosnące ml',
+    'sort_ml-': 'Malejące ml',
+    'sort_perc+': 'Rosnący %',
+    'sort_perc-': 'Malejący %',
+    'okey': 'Okej',
+    'reaction': 'Reakcja na promile',
+    'drunk1': 'Jesteś kompletnie trzeźwy',
+    'drunk2':
+        'Jesteś na tyle trzeźwy by móc w Polsce prowadzić samochód\nMożesz czuć niewielką zmianę nastroju',
+    'drunk3':
+        'Twoja koordynacja wzrokowo-ruchowa jest zaburzona\nRozpoczyna się tracenie równowagi\nMożesz przeżywać euforię\nNie prowadź żadnego pojazdu!',
+    'drunk4':
+        'Twoja sprawność ruchowa jest zaburzona\nJesteś nadpobudliwy i gadatliwy\nTwoja samokontrola jest obniżona\nBłędnie oceniasz swoje możliwości',
+    'drunk5':
+        'Przeżywasz zaburzenia równowagi\nSpada Twoja sprawność intelektualna\nTwój czas reakcji jest opóźniony\nJesteś drażliwy\nMasz wysokie ciśnienie krwi',
+    'drunk6':
+        'Twoja mowa przypomina bełkot\nPrzerwacasz się\nCzujesz wzmożoną senność\nNie kontrolujesz własnych zachowań',
+    'drunk7':
+        'Spada Twoje ciśnienie krwi\nSpada Twoja temperatura ciała\nTracisz odruchy fizjologiczne',
+    'drunk8': 'Jesteś w śpiączce lub już nie żyjesz',
+    'drunk9': 'Nie żyjesz\nImpreza na pewno była tego warta',
+    'cancel': 'Anuluj',
+    'beer': 'Piwo',
+    'vodka': 'Wódka',
+    'wine': 'Wino',
+    'champagne': 'Szampan',
+    'moonshine': 'Bimber dziadka',
   };
 }
