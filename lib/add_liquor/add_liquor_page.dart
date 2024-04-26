@@ -149,11 +149,11 @@ class AddLiquorController extends GetxController {
   RxBool volumeCorrect = false.obs;
 
   final List<dynamic> definedLiquors = [
-    ['Piwo', '6', '500'],
-    ['Wódka', '40', '30'],
-    ['Wino', '10.5', '150'],
-    ['Szampan', '12', '125'],
-    ['Bimber dziadka', '75', '30'],
+    ['beer'.tr, '6', '500'],
+    ['vodka'.tr, '40', '30'],
+    ['wine'.tr, '10.5', '150'],
+    ['champagne'.tr, '12', '125'],
+    ['moonshine'.tr, '75', '30'],
   ];
 
   @override
