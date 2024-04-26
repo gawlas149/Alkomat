@@ -11,7 +11,7 @@ class EditLiquorPage extends GetView<EditLiquorController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightGreen,
-        title: const Text('Edytuj trunek'),
+        title: Text('edit_liquor'.tr),
       ),
       body: _body(),
     );
@@ -27,12 +27,12 @@ class EditLiquorPage extends GetView<EditLiquorController> {
               maxLength: 15,
               controller: controller.nameController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Nazwa trunku'),
+                label: Text('liquor_name'.tr),
               ),
             ),
             TextFormField(
@@ -40,12 +40,12 @@ class EditLiquorPage extends GetView<EditLiquorController> {
               keyboardType: TextInputType.number,
               controller: controller.percentageController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Woltaż trunku [%]'),
+                label: Text('liquor_voltage'.tr),
               ),
               onChanged: (String text) {
                 controller.checkVoltage(text);
@@ -56,12 +56,12 @@ class EditLiquorPage extends GetView<EditLiquorController> {
               keyboardType: TextInputType.number,
               controller: controller.volumeController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Objętość trunku [ml]'),
+                label: Text('liquor_volume'.tr),
               ),
               onChanged: (String text) {
                 controller.checkVolume(text);
@@ -111,7 +111,6 @@ class EditLiquorPage extends GetView<EditLiquorController> {
   Widget _buttonAddVolume(int volume) {
     return Expanded(
       child: ElevatedButton(
-        child: Text('+ $volume'),
         onPressed: () => {
           controller.volumeController.text =
               (int.parse(controller.volumeController.text) + volume).toString()
@@ -120,6 +119,7 @@ class EditLiquorPage extends GetView<EditLiquorController> {
             backgroundColor: Colors.lightGreen,
             foregroundColor: Colors.black,
             elevation: 3),
+        child: Text('+ $volume'),
       ),
     );
   }
@@ -137,25 +137,25 @@ class EditLiquorPage extends GetView<EditLiquorController> {
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
-      child: Text('Zapisz trunek'),
+      child: Text('liquor_save'.tr),
     );
   }
 
   Widget _buttonSaveDisabled() {
-    return const ElevatedButton(
+    return ElevatedButton(
       onPressed: null,
-      child: Text('Zapisz trunek'),
+      child: Text('liquor_save'.tr),
     );
   }
 
   Widget _buttonDelete() {
     return ElevatedButton(
-      child: const Text('Usuń trunek'),
       onPressed: () => {Get.back(result: -1)},
       style: ElevatedButton.styleFrom(
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
+      child: Text('liquor_delete'.tr),
     );
   }
 }

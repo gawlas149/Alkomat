@@ -7,6 +7,7 @@ import 'add_liquor/add_liquor_bind.dart';
 import 'add_liquor/add_liquor_page.dart';
 import 'edit_liquor/edit_liquor_bind.dart';
 import 'edit_liquor/edit_liquor_page.dart';
+import 'internatiolization/translations.dart';
 import 'main_screen/main_screen_bind.dart';
 import 'main_screen/main_screen_page.dart';
 
@@ -23,14 +24,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'IOS Projekt',
-
-      // do wielu języków
-
-      // translations: ApplicationTranslations(),
-      // locale: Get.deviceLocale,
-      // locale: const Locale('pl', 'PL'),
-      // locale: const Locale('en', 'US'),
-      // fallbackLocale: const Locale('en', 'US'),
+      translations: ApplicationTranslations(),
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('pl', 'PL'),
       theme: ThemeData(),
       getPages: <GetPage<StatelessWidget>>[
         GetPage<MainScreenPage>(
