@@ -13,7 +13,22 @@ class MainScreenPage extends GetView<MainScreenController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightGreen,
-        title: const Text('Strona główna'),
+        title: Text('main_screen'.tr),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.language,
+              size: 36,
+            ),
+            onPressed: () {
+              if (Get.locale.toString() == 'en_US') {
+                Get.updateLocale(const Locale('pl', 'PL'));
+              } else {
+                Get.updateLocale(const Locale('en', 'US'));
+              }
+            },
+          ),
+        ],
       ),
       body: _body(),
       floatingActionButton: Obx(
@@ -32,25 +47,25 @@ class MainScreenPage extends GetView<MainScreenController> {
           children: [
             const SizedBox(height: 15),
             Text(
-              'Celem aplikacji jest mierzenie stężenia alkoholu we krwi w trakcie imprezy\n\nKontroluj jak bardzo jesteś pijany poprzez systematyczne aktualizowanie wypitych trunków\n\n',
-              style: TextStyle(fontSize: 16),
+              'main_screen_info1'.tr,
+              style: const TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
             Text(
-              'Aby aplikacja działała skuteczniej potrzebujemy paru informacji o Tobie:',
-              style: TextStyle(fontSize: 16),
+              'main_screen_info2'.tr,
+              style: const TextStyle(fontSize: 16),
             ),
             TextFormField(
               maxLength: 4,
               keyboardType: TextInputType.number,
               controller: controller.weightController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Twoja waga [kg]'),
+                label: Text('your_weight'.tr),
               ),
               onChanged: (String text) {
                 controller.checkWeight(text);
@@ -61,12 +76,12 @@ class MainScreenPage extends GetView<MainScreenController> {
               keyboardType: TextInputType.number,
               controller: controller.limitController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Twój limit alkoholu [‰]'),
+                label: Text('your_limit'.tr),
               ),
               onChanged: (String text) {
                 controller.checkLimit(text);
@@ -100,7 +115,7 @@ class MainScreenPage extends GetView<MainScreenController> {
       () => Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Text('Twoja płeć:'),
+          Text('your_gender'.tr),
           InkWell(
             child: Row(
               children: [
@@ -112,7 +127,7 @@ class MainScreenPage extends GetView<MainScreenController> {
                     controller.selectedGender!.value = 'male';
                   },
                 ),
-                Text('Mężczyzna'),
+                Text('male'.tr),
               ],
             ),
             onTap: () => {controller.selectedGender!.value = 'male'},
@@ -128,7 +143,7 @@ class MainScreenPage extends GetView<MainScreenController> {
                     controller.selectedGender!.value = 'female';
                   },
                 ),
-                Text('Kobieta'),
+                Text('female'.tr),
               ],
             ),
             onTap: () => {controller.selectedGender!.value = 'female'},

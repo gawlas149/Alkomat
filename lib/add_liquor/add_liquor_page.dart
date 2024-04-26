@@ -11,7 +11,7 @@ class AddLiquorPage extends GetView<AddLiquorController> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightGreen,
-        title: const Text('Dodaj trunek'),
+        title: Text('add_liquor'.tr),
       ),
       body: _body(),
     );
@@ -24,16 +24,17 @@ class AddLiquorPage extends GetView<AddLiquorController> {
           child: Obx(
         () => Column(
           children: [
+            _liqourList(),
             TextFormField(
               maxLength: 15,
               controller: controller.nameController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
-                floatingLabelStyle: TextStyle(color: Colors.green),
-                focusedBorder: UnderlineInputBorder(
+              decoration: InputDecoration(
+                floatingLabelStyle: const TextStyle(color: Colors.green),
+                focusedBorder: const UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Nazwa trunku'),
+                label: Text('liquor_name'.tr),
               ),
             ),
             TextFormField(
@@ -41,12 +42,12 @@ class AddLiquorPage extends GetView<AddLiquorController> {
               keyboardType: TextInputType.number,
               controller: controller.percentageController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 floatingLabelStyle: TextStyle(color: Colors.green),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Woltaż trunku [%]'),
+                label: Text('liquor_voltage'.tr),
               ),
               onChanged: (String text) {
                 controller.checkVoltage(text);
@@ -57,12 +58,12 @@ class AddLiquorPage extends GetView<AddLiquorController> {
               keyboardType: TextInputType.number,
               controller: controller.volumeController,
               style: const TextStyle(fontSize: 18),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 floatingLabelStyle: TextStyle(color: Colors.green),
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
                 ),
-                label: Text('Objętość trunku [ml]'),
+                label: Text('liquor_volume'.tr),
               ),
               onChanged: (String text) {
                 controller.checkVolume(text);
@@ -93,14 +94,46 @@ class AddLiquorPage extends GetView<AddLiquorController> {
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
-      child: Text('Zapisz trunek'),
+      child: Text('liquor_save'.tr),
     );
   }
 
   Widget _buttonSaveDisabled() {
-    return const ElevatedButton(
+    return ElevatedButton(
       onPressed: null,
-      child: Text('Zapisz trunek'),
+      child: Text('liquor_save'.tr),
+    );
+  }
+
+  Widget _liqourList() {
+    return ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 12, bottom: 30),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) => InkWell(
+            onTap: () => {
+                  controller.nameController.text =
+                      controller.definedLiquors[index][0],
+                  controller.percentageController.text =
+                      controller.definedLiquors[index][1],
+                  controller.volumeController.text =
+                      controller.definedLiquors[index][2],
+                  controller.voltageCorrect.value = true,
+                  controller.volumeCorrect.value = true,
+                },
+            child: _liquorRow(controller.definedLiquors[index])),
+        separatorBuilder: (BuildContext context, int index) => Container(
+              height: 1,
+              color: Colors.black,
+            ),
+        itemCount: controller.definedLiquors.length);
+  }
+
+  Widget _liquorRow(List<String> liquor) {
+    return Text(
+      liquor[0],
+      style: TextStyle(fontSize: 22),
+      textAlign: TextAlign.center,
     );
   }
 }
@@ -114,6 +147,14 @@ class AddLiquorController extends GetxController {
 
   RxBool voltageCorrect = false.obs;
   RxBool volumeCorrect = false.obs;
+
+  final List<dynamic> definedLiquors = [
+    ['Piwo', '6', '500'],
+    ['Wódka', '40', '30'],
+    ['Wino', '10.5', '150'],
+    ['Szampan', '12', '125'],
+    ['Bimber dziadka', '75', '30'],
+  ];
 
   @override
   void onInit() {

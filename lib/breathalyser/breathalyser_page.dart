@@ -18,7 +18,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightGreen,
-          title: const Text('Alkomat'),
+          title: Text('breathalyser'.tr),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
@@ -39,8 +39,12 @@ class BreathalyserPage extends GetView<BreathalyserController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _timePicker(),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 10),
                     _buttonClearBreathalyser(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    _buttonSortBreathalyser(),
                   ],
                 )
               : _timePicker(),
@@ -143,7 +147,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
             return Text(
                 '${controller.startTimeHours}:${controller.startTimeMinutes}');
           } else {
-            return Text('Wybierz czas rozpoczęcia libacji');
+            return Text('choose_time'.tr);
           }
         },
       ),
@@ -152,9 +156,22 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _buttonClearBreathalyser() {
     return ElevatedButton(
-      child: const Text('Koniec imprezy'),
       onPressed: () => {
         showConfirmDialog(),
+      },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
+      child: Text('end'.tr),
+    );
+  }
+
+  Widget _buttonSortBreathalyser() {
+    return ElevatedButton(
+      child: const Text('Sortuj'),
+      onPressed: () => {
+        showSortDialog(),
       },
       style: ElevatedButton.styleFrom(
           backgroundColor: Colors.lightGreen,
@@ -165,7 +182,6 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _buttonAddLiquor() {
     return ElevatedButton(
-      child: const Text('Dodaj trunek'),
       onPressed: () => {
         Get.toNamed(AddLiquorPage.path)!.then(
           (result) => {
@@ -184,6 +200,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
+      child: Text('add_liquor'.tr),
     );
   }
 
@@ -354,7 +371,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     final BuildContext context = Get.context!;
     final Widget cancelButton = TextButton(
       child: Text(
-        'Nie :D',
+        'end_no'.tr,
         style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
@@ -363,7 +380,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
     final Widget continueButton = TextButton(
       child: Text(
-        'Tak :c',
+        'end_yes'.tr,
         style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
@@ -374,13 +391,13 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
     final AlertDialog alert = AlertDialog(
       title: Text(
-        'Koniec imprezy',
+        'end'.tr,
         textAlign: TextAlign.center,
       ),
       titlePadding: const EdgeInsets.only(top: 18),
       content: Text(
-        '\nCzy impreza na pewno się zakończyła?\nPotwierdzenie spowoduje wyczyszczenie listsy alkoholi',
-        style: TextStyle(fontSize: 16),
+        'end_question'.tr,
+        style: const TextStyle(fontSize: 16),
         textAlign: TextAlign.center,
       ),
       contentPadding:
@@ -388,6 +405,147 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       actions: <Widget>[
         cancelButton,
         continueButton,
+      ],
+      actionsAlignment: MainAxisAlignment.spaceAround,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  void showSortDialog() {
+    final BuildContext context = Get.context!;
+    final Widget cancelButton = TextButton(
+      child: Text(
+        'Anuluj',
+        style: TextStyle(fontSize: 18, color: Colors.black),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'Sortuj',
+        textAlign: TextAlign.center,
+      ),
+      titlePadding: const EdgeInsets.only(top: 18),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton(
+            child: Text(
+              'Od A do Z',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors.sort((a, b) => a.name.compareTo(b.name)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+          ElevatedButton(
+            child: Text(
+              'Od Z do A',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors.sort((a, b) => b.name.compareTo(a.name)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+          ElevatedButton(
+            child: Text(
+              'Rosnące ml',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => a.volume.compareTo(b.volume)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+          ElevatedButton(
+            child: Text(
+              'Malejące ml',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => b.volume.compareTo(a.volume)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+          ElevatedButton(
+            child: Text(
+              'Rosnący %',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => a.percentage.compareTo(b.percentage)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+          ElevatedButton(
+            child: Text(
+              'Malejący %',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => b.percentage.compareTo(a.percentage)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+          ),
+        ],
+      ),
+      contentPadding:
+          const EdgeInsets.only(top: 6, bottom: 18, left: 6, right: 6),
+      actions: <Widget>[
+        cancelButton,
       ],
       actionsAlignment: MainAxisAlignment.spaceAround,
       shape: const RoundedRectangleBorder(
