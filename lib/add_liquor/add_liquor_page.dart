@@ -24,6 +24,7 @@ class AddLiquorPage extends GetView<AddLiquorController> {
           child: Obx(
         () => Column(
           children: [
+            _liqourList(),
             TextFormField(
               maxLength: 15,
               controller: controller.nameController,
@@ -103,6 +104,38 @@ class AddLiquorPage extends GetView<AddLiquorController> {
       child: Text('liquor_save'.tr),
     );
   }
+
+  Widget _liqourList() {
+    return ListView.separated(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(top: 12, bottom: 30),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) => InkWell(
+            onTap: () => {
+                  controller.nameController.text =
+                      controller.definedLiquors[index][0],
+                  controller.percentageController.text =
+                      controller.definedLiquors[index][1],
+                  controller.volumeController.text =
+                      controller.definedLiquors[index][2],
+                  controller.voltageCorrect.value = true,
+                  controller.volumeCorrect.value = true,
+                },
+            child: _liquorRow(controller.definedLiquors[index])),
+        separatorBuilder: (BuildContext context, int index) => Container(
+              height: 1,
+              color: Colors.black,
+            ),
+        itemCount: controller.definedLiquors.length);
+  }
+
+  Widget _liquorRow(List<String> liquor) {
+    return Text(
+      liquor[0],
+      style: TextStyle(fontSize: 22),
+      textAlign: TextAlign.center,
+    );
+  }
 }
 
 class AddLiquorController extends GetxController {
@@ -114,6 +147,14 @@ class AddLiquorController extends GetxController {
 
   RxBool voltageCorrect = false.obs;
   RxBool volumeCorrect = false.obs;
+
+  final List<dynamic> definedLiquors = [
+    ['beer'.tr, '6', '500'],
+    ['vodka'.tr, '40', '30'],
+    ['wine'.tr, '10.5', '150'],
+    ['champagne'.tr, '12', '125'],
+    ['moonshine'.tr, '75', '30'],
+  ];
 
   @override
   void onInit() {
