@@ -167,19 +167,6 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
   }
 
-  Widget _buttonSortBreathalyser() {
-    return ElevatedButton(
-      child: const Text('Sortuj'),
-      onPressed: () => {
-        showSortDialog(),
-      },
-      style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.lightGreen,
-          foregroundColor: Colors.black,
-          elevation: 3),
-    );
-  }
-
   Widget _buttonAddLiquor() {
     return ElevatedButton(
       onPressed: () => {
@@ -235,6 +222,160 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
   }
 
+  Widget _buttonSortBreathalyser() {
+    return ElevatedButton(
+      child: Text('sort'.tr),
+      onPressed: () => {
+        showSortDialog(),
+      },
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.lightGreen,
+          foregroundColor: Colors.black,
+          elevation: 3),
+    );
+  }
+
+  void showSortDialog() {
+    final BuildContext context = Get.context!;
+    final Widget cancelButton = TextButton(
+      child: Text(
+        'cancel'.tr,
+        style: TextStyle(fontSize: 18, color: Colors.black),
+      ),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    final AlertDialog alert = AlertDialog(
+      title: Text(
+        'sort'.tr,
+        textAlign: TextAlign.center,
+      ),
+      titlePadding: const EdgeInsets.only(top: 18),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors.sort((a, b) => a.name.compareTo(b.name)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_az'.tr,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors.sort((a, b) => b.name.compareTo(a.name)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_za'.tr,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => a.volume.compareTo(b.volume)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_ml+'.tr,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => b.volume.compareTo(a.volume)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_ml-'.tr,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => a.percentage.compareTo(b.percentage)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_perc+'.tr,
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () => {
+              controller.drunkLiquors
+                  .sort((a, b) => b.percentage.compareTo(a.percentage)),
+              Navigator.of(context).pop(),
+              controller.updateSharedPreferencesLiquors(),
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+                foregroundColor: Colors.black,
+                elevation: 3),
+            child: Text(
+              'sort_perc-'.tr,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+      contentPadding:
+          const EdgeInsets.only(top: 6, bottom: 18, left: 6, right: 6),
+      actions: <Widget>[
+        cancelButton,
+      ],
+      actionsAlignment: MainAxisAlignment.spaceAround,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Widget _percentageInBloodText() {
     if (controller.userLimit != null) {
       return InkWell(
@@ -249,15 +390,17 @@ class BreathalyserPage extends GetView<BreathalyserController> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
+                offset: const Offset(0, 3),
               ),
             ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
-              style: TextStyle(fontSize: 15),
+              'percentage_in_blood'.trParams(<String, String>{
+                'percentage': controller.percentageInBlood.toStringAsFixed(3)
+              }),
+              style: const TextStyle(fontSize: 15),
             ),
           ),
         ),
@@ -278,15 +421,17 @@ class BreathalyserPage extends GetView<BreathalyserController> {
                 color: Colors.grey.withOpacity(0.5),
                 spreadRadius: 2,
                 blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
+                offset: const Offset(0, 3), // changes position of shadow
               ),
             ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
-              style: TextStyle(fontSize: 15),
+              'percentage_in_blood'.trParams(<String, String>{
+                'percentage': controller.percentageInBlood.toStringAsFixed(3)
+              }),
+              style: const TextStyle(fontSize: 15),
             ),
           ),
         ),
@@ -295,76 +440,6 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         },
       );
     }
-  }
-
-  void showInfoDialog() {
-    final BuildContext context = Get.context!;
-    final Widget okeyButton = TextButton(
-      child: Text(
-        'Okej',
-        style: TextStyle(fontSize: 18, color: Colors.green),
-      ),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    final AlertDialog alert = AlertDialog(
-      title: Text(
-        'Reakcja na promile',
-        textAlign: TextAlign.center,
-      ),
-      titlePadding: const EdgeInsets.only(top: 18),
-      content: Text(
-        _infoText(),
-        style: TextStyle(fontSize: 16),
-        textAlign: TextAlign.center,
-      ),
-      contentPadding:
-          const EdgeInsets.only(top: 20, bottom: 18, left: 10, right: 10),
-      actions: <Widget>[
-        okeyButton,
-      ],
-      actionsAlignment: MainAxisAlignment.spaceAround,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(18))),
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
-  String _infoText() {
-    double percentageInBlood = controller.percentageInBlood.value;
-    if (percentageInBlood == 0) {
-      return 'Jesteś kompletnie trzeźwy';
-    }
-    if (percentageInBlood < 0.2) {
-      return 'Jesteś na tyle trzeźwy by móc w Polsce prowadzić samochód\nMożesz czuć niewielką zmianę nastroju';
-    }
-    if (percentageInBlood < 0.5) {
-      return 'Twoja koordynacja wzrokowo-ruchowa jest zaburzona\nRozpoczyna się tracenie równowagi\nMożesz przeżywać euforię\nNie prowadź żadnego pojazdu!';
-    }
-    if (percentageInBlood < 0.7) {
-      return 'Twoja sprawność ruchowa jest zaburzona\nJesteś nadpobudliwy i gadatliwy\nTwoja samokontrola jest obniżona\nBłędnie oceniasz swoje możliwości';
-    }
-    if (percentageInBlood < 2) {
-      return 'Przeżywasz zaburzenia równowagi\nSpada Twoja sprawność intelektualna\nTwój czas reakcji jest opóźniony\nJesteś drażliwy\nMasz wysokie ciśnienie krwi';
-    }
-    if (percentageInBlood < 3) {
-      return 'Twoja mowa przypomina bełkot\nPrzerwacasz się\nCzujesz wzmożoną senność\nNie kontrolujesz własnych zachowań';
-    }
-    if (percentageInBlood < 4) {
-      return 'Spada Twoje ciśnienie krwi\nSpada Twoja temperatura ciała\nTracisz odruchy fizjologiczne';
-    }
-    if (percentageInBlood < 5) {
-      return 'Jesteś w śpiączce lub już nie żyjesz';
-    }
-    return 'Nie żyjesz\nImpreza na pewno była tego warta';
   }
 
   void showConfirmDialog() {
@@ -419,12 +494,12 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
   }
 
-  void showSortDialog() {
+  void showInfoDialog() {
     final BuildContext context = Get.context!;
-    final Widget cancelButton = TextButton(
+    final Widget okeyButton = TextButton(
       child: Text(
-        'Anuluj',
-        style: TextStyle(fontSize: 18, color: Colors.black),
+        'okey'.tr,
+        style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
         Navigator.of(context).pop();
@@ -433,119 +508,19 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
     final AlertDialog alert = AlertDialog(
       title: Text(
-        'Sortuj',
+        'reaction'.tr,
         textAlign: TextAlign.center,
       ),
       titlePadding: const EdgeInsets.only(top: 18),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ElevatedButton(
-            child: Text(
-              'Od A do Z',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors.sort((a, b) => a.name.compareTo(b.name)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-          ElevatedButton(
-            child: Text(
-              'Od Z do A',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors.sort((a, b) => b.name.compareTo(a.name)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-          ElevatedButton(
-            child: Text(
-              'Rosnące ml',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors
-                  .sort((a, b) => a.volume.compareTo(b.volume)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-          ElevatedButton(
-            child: Text(
-              'Malejące ml',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors
-                  .sort((a, b) => b.volume.compareTo(a.volume)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-          ElevatedButton(
-            child: Text(
-              'Rosnący %',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors
-                  .sort((a, b) => a.percentage.compareTo(b.percentage)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-          ElevatedButton(
-            child: Text(
-              'Malejący %',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            onPressed: () => {
-              controller.drunkLiquors
-                  .sort((a, b) => b.percentage.compareTo(a.percentage)),
-              Navigator.of(context).pop(),
-              controller.updateSharedPreferencesLiquors(),
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
-                foregroundColor: Colors.black,
-                elevation: 3),
-          ),
-        ],
+      content: Text(
+        _infoText(),
+        style: TextStyle(fontSize: 16),
+        textAlign: TextAlign.center,
       ),
       contentPadding:
-          const EdgeInsets.only(top: 6, bottom: 18, left: 6, right: 6),
+          const EdgeInsets.only(top: 20, bottom: 18, left: 10, right: 10),
       actions: <Widget>[
-        cancelButton,
+        okeyButton,
       ],
       actionsAlignment: MainAxisAlignment.spaceAround,
       shape: const RoundedRectangleBorder(
@@ -558,6 +533,35 @@ class BreathalyserPage extends GetView<BreathalyserController> {
         return alert;
       },
     );
+  }
+
+  String _infoText() {
+    double percentageInBlood = controller.percentageInBlood.value;
+    if (percentageInBlood == 0) {
+      return 'drunk1'.tr;
+    }
+    if (percentageInBlood < 0.2) {
+      return 'drunk2'.tr;
+    }
+    if (percentageInBlood < 0.5) {
+      return 'drunk3'.tr;
+    }
+    if (percentageInBlood < 0.7) {
+      return 'drunk4'.tr;
+    }
+    if (percentageInBlood < 2) {
+      return 'drunk5'.tr;
+    }
+    if (percentageInBlood < 3) {
+      return 'drunk6'.tr;
+    }
+    if (percentageInBlood < 4) {
+      return 'drunk7'.tr;
+    }
+    if (percentageInBlood < 5) {
+      return 'drunk8'.tr;
+    }
+    return 'drunk9'.tr;
   }
 }
 
