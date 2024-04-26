@@ -18,7 +18,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightGreen,
-          title: const Text('Alkomat'),
+          title: Text('breathalyser'.tr),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
@@ -143,7 +143,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
             return Text(
                 '${controller.startTimeHours}:${controller.startTimeMinutes}');
           } else {
-            return Text('Wybierz czas rozpoczęcia libacji');
+            return Text('choose_time'.tr);
           }
         },
       ),
@@ -152,7 +152,6 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
   Widget _buttonClearBreathalyser() {
     return ElevatedButton(
-      child: const Text('Koniec imprezy'),
       onPressed: () => {
         showConfirmDialog(),
       },
@@ -160,12 +159,12 @@ class BreathalyserPage extends GetView<BreathalyserController> {
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
+      child: Text('end'.tr),
     );
   }
 
   Widget _buttonAddLiquor() {
     return ElevatedButton(
-      child: const Text('Dodaj trunek'),
       onPressed: () => {
         Get.toNamed(AddLiquorPage.path)!.then(
           (result) => {
@@ -184,6 +183,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
           backgroundColor: Colors.lightGreen,
           foregroundColor: Colors.black,
           elevation: 3),
+      child: Text('add_liquor'.tr),
     );
   }
 
@@ -231,15 +231,17 @@ class BreathalyserPage extends GetView<BreathalyserController> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
-            style: TextStyle(fontSize: 15),
+            'percentage_in_blood'.trParams(<String, String>{
+              'percentage': controller.percentageInBlood.toStringAsFixed(3)
+            }),
+            style: const TextStyle(fontSize: 15),
           ),
         ),
       );
@@ -255,15 +257,17 @@ class BreathalyserPage extends GetView<BreathalyserController> {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3), // changes position of shadow
             ),
           ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            '${controller.percentageInBlood.toStringAsFixed(3)}‰ we krwi',
-            style: TextStyle(fontSize: 15),
+            'percentage_in_blood'.trParams(<String, String>{
+              'percentage': controller.percentageInBlood.toStringAsFixed(3)
+            }),
+            style: const TextStyle(fontSize: 15),
           ),
         ),
       );
@@ -274,7 +278,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     final BuildContext context = Get.context!;
     final Widget cancelButton = TextButton(
       child: Text(
-        'Nie :D',
+        'end_no'.tr,
         style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
@@ -283,7 +287,7 @@ class BreathalyserPage extends GetView<BreathalyserController> {
     );
     final Widget continueButton = TextButton(
       child: Text(
-        'Tak :c',
+        'end_yes'.tr,
         style: TextStyle(fontSize: 18, color: Colors.green),
       ),
       onPressed: () {
@@ -294,13 +298,13 @@ class BreathalyserPage extends GetView<BreathalyserController> {
 
     final AlertDialog alert = AlertDialog(
       title: Text(
-        'Koniec imprezy',
+        'end'.tr,
         textAlign: TextAlign.center,
       ),
       titlePadding: const EdgeInsets.only(top: 18),
       content: Text(
-        '\nCzy impreza na pewno się zakończyła?\nPotwierdzenie spowoduje wyczyszczenie listsy alkoholi',
-        style: TextStyle(fontSize: 16),
+        'end_question'.tr,
+        style: const TextStyle(fontSize: 16),
         textAlign: TextAlign.center,
       ),
       contentPadding:
